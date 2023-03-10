@@ -2,13 +2,14 @@ import { LayoutComponent } from "@/components/layout/Layout";
 import React from "react";
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { ListProducts } from "@/components/products/ListProducts";
-import { fetchProducts } from "@/src/hooks/useProducts/useProducts";
+import { fetchProducts } from "@/src/services/product";
+import { delayRequest } from "@/src/helpers/common"
 
 const Index = () => {
 
     return (
         <LayoutComponent>
-            <ListProducts/>
+            <ListProducts namePage="products"/>
         </LayoutComponent>
     )
 }
@@ -21,7 +22,7 @@ export async function getStaticProps() {
         ['products', limit, skip],
         () => fetchProducts(limit, skip)
     )
-
+    await delayRequest(1000)
     return {
         props: {
             dehydratedState: dehydrate(queryClient),

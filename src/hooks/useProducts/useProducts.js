@@ -1,35 +1,24 @@
-import { requestClient } from "@/src/axios/request";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query';
+import { fetchProducts, fetchSingleProduct } from "@/src/services/product";
 
-const fetchProducts = async (limit = 10, skip = 1) => {
-    const response =  await requestClient.get(`/products?limit=${limit}&skip=${skip}`);
-    return await response.data;
-}
 
-const useProducts = (limit, skip) => {
+const useProducts = (limit = 10, skip = 1) => {
     return useQuery(
         ['products', limit, skip],
         () => fetchProducts(limit, skip),
-        { keepPreviousData: true, staleTime: 5000 }
+        { keepPreviousData: true, staleTime: Infinity }
     )
 }
 
-const fetchProductsCategory   = async (limit = 10, skip = 1) => {
-    const response =  await requestClient.get(`/products/categories?limit=${limit}&skip=${skip}`);
-    return await response.data;
-}
-
-const useProductsCategory = (limit, skip) => {
+const useSingleProduct = (id) => {
     return useQuery(
-        ['productsCategory', limit, skip],
-        () => fetchProductsCategory(limit, skip),
-        { keepPreviousData: true, staleTime: 5000 }
+        ['singleProduct', id],
+        () => fetchSingleProduct(id),
+        { staleTime: Infinity, enabled: id.length > 0 }
     )
 }
 
 export {
     useProducts,
-    fetchProducts,
-    useProductsCategory,
-    fetchProductsCategory
+    useSingleProduct
 }

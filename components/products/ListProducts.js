@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { Row, Col, Skeleton, Card, Alert } from 'antd';
-import {  useProducts } from "@/src/hooks/useProducts/useProducts";
+import { useProducts } from "@/src/hooks/useProducts/useProducts";
+import { useProductsCategory } from "@/src/hooks/useCategories/useCategories"
 import { Pagination } from "@/components/products/Pagination ";
+import { useRouter } from "next/router";
+import Link from 'next/link';
+import slugify from 'react-slugify';
 
 const { Meta } = Card;
-export const ListProducts = React.memo(() => {
-    const [page, setPage] = useState(1);
+export const ListProducts = React.memo(({ namePage }) => {
+    const router = useRouter();
+    const nameCategory = namePage === 'category' ? router.query.name : null;
+
+    const [page, setPage]   = useState(1);
     const [limit, setLimit] = useState(10)
-    const { data, isLoading, isError, isPreviousData } = useProducts(limit, (page - 1))
+    const { data, isLoading, isError, isPreviousData } = (namePage === 'products') ? useProducts(limit, page) : useProductsCategory(nameCategory, limit, page);
     const changePage = p => {
         if(!isPreviousData){
             setPage(p)
@@ -40,24 +47,26 @@ export const ListProducts = React.memo(() => {
             <Row>
                 {data.products.map((item, index) => (
                     <Col key={index} span={6}>
-                        <Card
-                            bordered={false}
-                            hoverable
-                            style={{
-                                width: 350,
-                                marginBottom: 30,
-                                marginLeft: 5,
-                                marginRight: 5
-                            }}
-                            cover={<img alt={item.title} src={item.thumbnail} />}
-                        >
-                            <Meta title={item.title} />
-                            <div>
-                                <p style={{marginBottom: '0px'}}>Price: {item.price}</p>
-                                <p style={{marginBottom: '0px'}}>Rating: {item.rating}</p>
-                                <p style={{marginBottom: '0px'}}>Brand: {item.brand} - {item.category}</p>
-                            </div>
-                        </Card>
+                        <Link href={`/products/${slugify(item.title)}/${item.id}`}>
+                            <Card
+                                bordered={false}
+                                hoverable
+                                style={{
+                                    width: 350,
+                                    marginBottom: 30,
+                                    marginLeft: 5,
+                                    marginRight: 5
+                                }}
+                                cover={<img alt={item.title} src={item.thumbnail} />}
+                            >
+                                <Meta title={item.title} />
+                                <div>
+                                    <p style={{marginBottom: '0px'}}>Price: {item.price}</p>
+                                    <p style={{marginBottom: '0px'}}>Rating: {item.rating}</p>
+                                    <p style={{marginBottom: '0px'}}>Brand: {item.brand} - {item.category}</p>
+                                </div>
+                            </Card>
+                        </Link>
                     </Col>
                 ))}
                 <Col span={24}>

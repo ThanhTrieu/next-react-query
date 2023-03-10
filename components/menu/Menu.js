@@ -2,11 +2,14 @@ import React, {memo} from 'react';
 import {  AppstoreFilled } from '@ant-design/icons';
 import { Layout, Menu, Skeleton } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useCategories } from "@/src/hooks/useCategories/useCategories";
 
 const { Sider } = Layout;
 export const SiderComponent = memo(() => {
-    const { data, isLoading } = useCategories()
+    const { data, isLoading } = useCategories();
+    const { asPath } = useRouter();
+
     let items = [];
     if(isLoading){
         return (
@@ -23,7 +26,7 @@ export const SiderComponent = memo(() => {
 
     if (data) {
         items = data.map((item) => ({
-            key: `/${item}`,
+            key: `/category/${item}`,
             label: <Link href={`/category/${item}`}>{item}</Link>,
             icon: <AppstoreFilled/>
         }))
@@ -42,8 +45,7 @@ export const SiderComponent = memo(() => {
 
             <Menu
                 mode="inline"
-                defaultSelectedKeys={['1']}
-                defaultOpenKeys={['sub1']}
+                defaultSelectedKeys={asPath}
                 style={{
                     height: '100%',
                     borderRight: 0,
