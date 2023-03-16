@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Skeleton, Card, Alert } from 'antd';
 import { useProducts } from "@/src/hooks/useProducts/useProducts";
 import { useProductsCategory } from "@/src/hooks/useCategories/useCategories"
-import { Pagination } from "@/components/products/Pagination ";
+import { Pagination } from "@/components/products/Pagination";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import slugify from 'react-slugify';
@@ -14,7 +14,8 @@ export const ListProducts = React.memo(({ namePage }) => {
 
     const [page, setPage]   = useState(1);
     const [limit, setLimit] = useState(10)
-    const { data, isLoading, isError, isPreviousData } = (namePage === 'products') ? useProducts(limit, page) : useProductsCategory(nameCategory, limit, page);
+    const { data, isLoading, isError, isPreviousData, isFetching } = (namePage === 'products') ? useProducts(limit, page) : useProductsCategory(nameCategory, limit, page);
+
     const changePage = p => {
         if(!isPreviousData){
             setPage(p)
@@ -27,7 +28,7 @@ export const ListProducts = React.memo(({ namePage }) => {
         }
     }
 
-    if(isLoading){
+    if(isLoading || isFetching){
         return <Skeleton active />
     }
 
