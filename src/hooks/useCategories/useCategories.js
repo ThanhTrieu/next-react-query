@@ -1,4 +1,3 @@
-import { requestClient } from "@/src/axios/request";
 import { useQuery } from '@tanstack/react-query';
 import {fetchCategories, fetchProductsCategory} from "@/src/services/category";
 
