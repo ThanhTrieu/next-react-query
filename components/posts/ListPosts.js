@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Avatar, List } from 'antd';
 import Link from "next/link";
-import { Pagination as  PaginationPostList } from "@/components/products/Pagination";
+import { Pagination as  PaginationPostList } from "@/components/commons/Pagination";
 import { useRouter } from "next/router";
 
 const ListPosts = ({ postsData }) => {

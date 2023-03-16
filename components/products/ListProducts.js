@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Skeleton, Card, Alert } from 'antd';
 import { useProducts } from "@/src/hooks/useProducts/useProducts";
 import { useProductsCategory } from "@/src/hooks/useCategories/useCategories"
-import { Pagination } from "@/components/products/Pagination";
+import { Pagination } from "@/components/commons/Pagination";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import slugify from 'react-slugify';
