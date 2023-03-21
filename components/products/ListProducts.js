@@ -53,7 +53,7 @@ export const ListProducts = React.memo(({ namePage }) => {
                                 bordered={false}
                                 hoverable
                                 style={{
-                                    width: 350,
+                                    width: 240,
                                     marginBottom: 30,
                                     marginLeft: 5,
                                     marginRight: 5
