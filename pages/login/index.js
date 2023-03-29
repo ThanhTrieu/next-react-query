@@ -1,10 +1,30 @@
+import { useState } from 'react'
+import { signIn, getCsrfToken  } from 'next-auth/react'
+import { getServerSession } from "next-auth/next"
 import { Button, Form, Input, Row, Col } from 'antd';
+import { useRouter } from 'next/router'
 
-const LoginMovies = () => {    
+export default function LoginPage({ csrfToken }) {
+    const router = useRouter()
+    const [error, setError] = useState(null)
 
-    const onFinish = (values) => {
-        console.log('Failed:', values);
+    const onFinish = async (values) => {
+        const res = await signIn('credentials', {
+            redirect: false,
+            username: values.username,
+            password: values.password,
+            callbackUrl: `${window.location.origin}`,
+        });
+        if (res?.error) {
+            setError(res.error)
+        } else {
+            setError(null)
+        }
+        if (res.url) {
+            router.push(res.url)
+        }
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -12,6 +32,7 @@ const LoginMovies = () => {
     return (
         <Row>
             <Col span={6} offset={9}>
+
                 <Form
                     name="basic"
                     style={{
@@ -27,6 +48,14 @@ const LoginMovies = () => {
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
+                    { error && (<p style={{ textAlign: 'center', color: 'red' }}>{'account invalid'}</p>) }
+                    <Form.Item
+                        name="csrfToken"
+                        style={{ display: 'none' }}
+                    >
+                        <Input type="hidden" defaultValue={csrfToken} />
+                    </Form.Item>
+
                     <Form.Item
                         label="Username"
                         name="username"
@@ -71,4 +100,21 @@ const LoginMovies = () => {
         </Row>
     )
 };
-export default LoginMovies;
+// This is the recommended way for Next.js 9.3 or newer
+export async function getServerSideProps(context) {
+    const session = await getServerSession(context.req, context.res)
+    if (session) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        }
+    }
+
+    return {
+        props: {
+            csrfToken: await getCsrfToken(context),
+        },
+    }
+}

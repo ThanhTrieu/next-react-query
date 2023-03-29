@@ -1,22 +1,17 @@
 import { withAuth } from "next-auth/middleware"
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
-export default withAuth(
-    function middleware(req) {
-        console.log(req.nextauth.token)
-    },
-    {
-        callbacks: {
-            authorized({ req, token }) {
-                // `/admin` requires admin role
-                if (req.nextUrl.pathname === "/admin/dashboard") {
-                    return token?.userRole === "admin"
-                }
-                // `/me` only requires the user to be logged in
-                return !!token
-            },
+export default withAuth({
+    callbacks: {
+        authorized({ req, token }) {
+            // `/admin` requires admin role
+            if (req.nextUrl.pathname.match(/^\/admin\/.*/gi)) {
+                return token?.userRole === 15
+            }
+            // `/me` only requires the user to be logged in
+            return !!token
         },
-    }
-)
+    },
+})
 
-export const config = { matcher: ["/admin/dashboard", "/me"] }
+export const config = { matcher: ['/admin/dashboard'] }
